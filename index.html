@@ -1,7 +1,358 @@
-<!doctype html>
-<meta charset=
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #4a6fa5;
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+        }
 
-"utf-8">
-<title>自己紹介</title>
-<h1>自己紹介</h1>
-<p>授業で作成したページです。</p>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #e0e0e0;
+                --primary-color: #7097d1;
+                --card-bg: #1e1e1e;
+                --border-color: #2d2d2d;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        section {
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border-color);
+            scroll-margin-top: 4rem;
+        }
+
+        section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .profile-box {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .skill-card {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .work-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .work-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .work-img-placeholder {
+            height: 150px;
+            background: linear-gradient(135deg, var(--primary-color), var(--border-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .work-content {
+            padding: 1rem;
+        }
+
+        .work-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .work-content p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .reflection-content {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .reflection-content p {
+            margin-bottom: 1rem;
+        }
+
+        .reflection-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Modal styling for Works detail */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .nav-links {
+                gap: 0.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">My Portfolio</div>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#works">Works</a></li>
+                <li><a href="#reflection">Reflection</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About</h2>
+            <div class="profile-box">
+                <p>植物とガジェット、そしてシンプルなものづくりを愛するWeb制作者です。現在はフロントエンドの技術を中心に、アクセシビリティや使いやすさに配慮したサイト設計・実装を学んでいます。</p>
+                <br>
+                <p>派手さよりも、日常に溶け込むような「ちょうどいい便利さ」を形にすることを大切にしています。どうぞよろしくお願いいたします。</p>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-card">HTML5</div>
+                <div class="skill-card">CSS3 / Flexbox</div>
+                <div class="skill-card">JavaScript</div>
+                <div class="skill-card">Responsive Design</div>
+                <div class="skill-card">UI/UX Basic</div>
+                <div class="skill-card">Git / GitHub</div>
+            </div>
+        </section>
+
+        <section id="works">
+            <h2>Works</h2>
+            <div class="works-grid">
+                <div class="work-card" onclick="openModal('タイマーアプリ', 'HTML/CSS/JSのみで動作するシンプルなポモドーロタイマー。集中時間と休憩時間を直感的に管理できます。スマホでの操作性を重視して大きなボタンで設計しました。')">
+                    <div class="work-img-placeholder">Timer App</div>
+                    <div class="work-content">
+                        <h3>ポモドーロタイマー</h3>
+                        <p>シンプルで軽量な作業効率化ツール。</p>
+                    </div>
+                </div>
+                <div class="work-card" onclick="openModal('静的ブログテンプレート', 'セマンティックなマークアップに拘った、1カラム構成のブログスキン。CSSカスタムプロパティを活用し、配色のカスタマイズを容易にしています。')">
+                    <div class="work-img-placeholder">Blog Template</div>
+                    <div class="work-content">
+                        <h3>ミニマルブログテンプレート</h3>
+                        <p>読みやすさを最優先した軽量デザイン。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reflection">
+            <h2>Reflection</h2>
+            <div class="reflection-content">
+                <p><strong>これまでを振り返って</strong></p>
+                <p>初めはコードが画面に反映される楽しさからスタートしましたが、学習を進めるうちに「誰にとっても使いやすい設計とは何か」を深く考えるようになりました。特にスマートフォンの普及率を考慮したモバイルファーストの重要性や、通信環境に左右されない軽量なサイト構築の大切さを痛感しています。</p>
+                <p><strong>これからの展望</strong></p>
+                <p>今後は、ただ動くものを作るだけでなく、セマンティックなHTML構造の理解をさらに深め、スクリーンリーダーなどにも配慮したアクセシブルなWebサイトを作れるようになりたいと考えています。地道な改善を積み重ね、信頼されるモノづくりを続けていきます。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 My Portfolio. All Rights Reserved.</p>
+    </footer>
+
+    <div id="workModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="document.getElementById('workModal').style.display='none'">&times;</button>
+            <h3 id="modalTitle" style="margin-bottom: 1rem;"></h3>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+
+    <script>
+        function openModal(title, description) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalDescription').innerText = description;
+            const modal = document.getElementById('workModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal(event) {
+            const modal = document.getElementById('workModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = ''; 
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('workModal');
+                if (modal.style.display === 'flex') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
